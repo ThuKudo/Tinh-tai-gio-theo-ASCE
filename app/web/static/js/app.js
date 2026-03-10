@@ -238,7 +238,6 @@ function renderResult(result, persist = true) {
   el.tablesWrap.innerHTML = [
     renderTable(t("case_a_title"), result.outputs.case_a),
     renderTable(t("case_b_title"), result.outputs.case_b),
-    renderTable(t("line_load_title"), Object.entries(result.outputs.line_load_labels).map(([cell, value]) => ({ cell, value }))),
     renderTable(t("intermediate_title"), Object.entries(result.intermediate).map(([name, value]) => ({ name, value }))),
   ].join("");
   renderBreakdown(result.breakdown);
