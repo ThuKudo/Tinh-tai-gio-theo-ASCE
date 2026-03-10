@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Báo cáo tính toán tải gió ASCE</title>
+  <style>
+    :root {
+      --ink: #132235;
+      --muted: #526171;
+      --line: #d7e0e8;
+      --panel: #f6f9fc;
+      --accent: #0f5a73;
+      --soft: #eaf2f8;
+      --warn: #7c2d12;
+      --warn-bg: #fff7ed;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: var(--ink);
+      background: #eef3f8;
+      line-height: 1.45;
+    }
+    .page {
+      width: min(1120px, calc(100vw - 32px));
+      margin: 18px auto 28px;
+      background: white;
+      border: 1px solid var(--line);
+      box-shadow: 0 10px 32px rgba(15, 23, 42, 0.08);
+    }
+    .header {
+      padding: 28px 34px 18px;
+      border-bottom: 2px solid var(--soft);
+      background: linear-gradient(180deg, #f8fbfe, white);
+    }
+    .eyebrow {
+      margin: 0 0 6px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      font-weight: 800;
+    }
+    h1, h2, h3 { margin: 0; }
+    h1 { font-size: 28px; }
+    h2 {
+      font-size: 17px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 14px;
+    }
+    p { margin: 0 0 12px; }
+    .subtle { color: var(--muted); }
+    .meta-grid, .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .summary-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .meta-card, .metric-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 16px;
+      background: var(--panel);
+    }
+    .metric-card strong {
+      display: block;
+      font-size: 18px;
+      margin-top: 6px;
+    }
+    .section {
+      padding: 22px 34px;
+      border-top: 1px solid #eef2f7;
+    }
+    .section-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 18px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 13px;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 8px 10px;
+      vertical-align: top;
+      text-align: left;
+    }
+    th {
+      background: var(--soft);
+      font-weight: 700;
+    }
+    .caption {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .step {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      background: #fcfdff;
+    }
+    .step h3 {
+      font-size: 15px;
+      margin-bottom: 10px;
+    }
+    .formula {
+      font-family: Consolas, monospace;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin: 10px 0;
+      white-space: pre-wrap;
+    }
+    .warn-box {
+      border: 1px solid #fed7aa;
+      background: var(--warn-bg);
+      color: var(--warn);
+      border-radius: 14px;
+      padding: 12px 14px;
+    }
+    ul { margin: 8px 0 0 18px; padding: 0; }
+    .footer-note {
+      padding: 16px 34px 28px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    @media print {
+      body { background: white; }
+      .page {
+        width: auto;
+        margin: 0;
+        border: none;
+        box-shadow: none;
+      }
+      .section, .header { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <p class="eyebrow">ASCE WIND LOAD</p>
+      <h1>Báo cáo tính toán tải gió ASCE</h1>
+      <p class="subtle">Báo cáo này được sinh trực tiếp từ calculation engine của phần mềm.</p>
+
+      <div class="meta-grid">
+        <div class="meta-card">
+          <strong>Tên dự án</strong>
+          <p>Bao cao mau</p>
+        </div>
+        <div class="meta-card">
+          <strong>Mã tham chiếu</strong>
+          <p>WL-VI-001</p>
+        </div>
+      </div>
+
+      <div class="summary-grid">
+        
+        <div class="metric-card">
+          <span class="subtle">Vận tốc gió thiết kế dùng cho tổ hợp áp lực</span>
+          <strong>72.079 m/s</strong>
+          <div>Vận tốc gió thiết kế</div>
+        </div>
+        
+        <div class="metric-card">
+          <span class="subtle">Áp lực vận tốc dùng cho các vùng áp lực</span>
+          <strong>2.517 kN/m²</strong>
+          <div>Áp lực vận tốc qz</div>
+        </div>
+        
+        <div class="metric-card">
+          <span class="subtle">Góc mái suy ra từ độ dốc nhập vào</span>
+          <strong>5.711 deg</strong>
+          <div>Góc mái</div>
+        </div>
+        
+        <div class="metric-card">
+          <span class="subtle">Cao độ giữa mái phục vụ tra hệ số</span>
+          <strong>24.375 m</strong>
+          <div>Cao độ giữa mái</div>
+        </div>
+        
+        <div class="metric-card">
+          <span class="subtle">Nội suy từ bảng địa hình</span>
+          <strong>0.930 -</strong>
+          <div>Hệ số Kz</div>
+        </div>
+        
+        <div class="metric-card">
+          <span class="subtle">Hệ số nội áp dương đang xét</span>
+          <strong>0.180 -</strong>
+          <div>GCpi dương</div>
+        </div>
+        
+      </div>
+    </header>
+
+    <section class="section">
+      <h2>Tóm tắt tính toán</h2>
+      <p>Dựa trên thông số gió, hệ số nội áp và các giá trị tra bảng tương ứng, áp lực vận tốc thiết kế được xác định và tổ hợp thành các áp lực vùng Case A và Case B phục vụ kiểm tra khung chính và đầu hồi. Áp lực vận tốc qz: 2.517 kN/m². Case A Z2 = -2.189 kN/m².</p>
+    </section>
+
+    <section class="section">
+      <div class="section-grid">
+        <div>
+          <h2>Tiêu chuẩn và tiêu chí thiết kế</h2>
+          <p>Thiết kế sử dụng các công thức chuyển đổi vận tốc gió theo QCVN và ASCE, nội suy hệ số Kz và GCpf theo bảng tham chiếu nội bộ, và tổ hợp nội áp GCpi theo kiểu bao che công trình.</p>
+        </div>
+        <div>
+          <h2>Ghi chú / giới hạn</h2>
+          <div class="warn-box">
+            <ul>
+              
+              <li>Case A mái đón gió đang chi phối áp lực âm lớn hơn đầu hồi.</li>
+              
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Thông số đầu vào</h2>
+      <table>
+        <thead>
+          <tr><th>Parameter</th><th>Value</th></tr>
+        </thead>
+        <tbody>
+          
+          <tr><td>Tên dự án</td><td>Bao cao mau</td></tr>
+          
+          <tr><td>Mã tham chiếu</td><td>WL-VI-001</td></tr>
+          
+          <tr><td>Tiêu chuẩn thiết kế</td><td>ASCE 7-16</td></tr>
+          
+          <tr><td>Vùng gió</td><td>IV</td></tr>
+          
+          <tr><td>Dạng địa hình</td><td>B</td></tr>
+          
+          <tr><td>Cấp công trình</td><td>III</td></tr>
+          
+          <tr><td>Bước khung</td><td>1 m</td></tr>
+          
+          <tr><td>Cao giọt nước H</td><td>23 m</td></tr>
+          
+          <tr><td>Độ dốc mái i</td><td>10 %</td></tr>
+          
+          <tr><td>Bề rộng nhà Bf</td><td>55 m</td></tr>
+          
+          <tr><td>Chiều dài nhà Lf</td><td>61.8 m</td></tr>
+          
+          <tr><td>Kiểu bao che</td><td>Enclosed</td></tr>
+          
+          <tr><td>Chu kỳ lặp nguồn</td><td>50 năm</td></tr>
+          
+          <tr><td>Chu kỳ lặp mục tiêu</td><td>1,700 năm</td></tr>
+          
+          <tr><td>Chu kỳ tham chiếu QCVN</td><td>20 năm</td></tr>
+          
+          <tr><td>Hệ số địa hình Kzt</td><td>1</td></tr>
+          
+          <tr><td>Hệ số hướng gió Kd</td><td>0.85</td></tr>
+          
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section">
+      <h2>Giả định</h2>
+      <ul>
+        
+        <li>Calculation engine áp dụng nhất quán bộ công thức và bảng tham chiếu của mô hình tính tải gió.</li>
+        
+        <li>Cấp công trình được giữ lại cho hồ sơ, nhưng mô hình hiện tại chưa tham chiếu trực tiếp trong công thức.</li>
+        
+        <li>Các giá trị Kz và GCpf được nội suy tuyến tính từ các bảng tham chiếu nội bộ.</li>
+        
+        <li>Bảng góc mái chỉ có hiệu lực trong miền 0 đến 90 độ.</li>
+        
+        <li>Nhãn line load được format nhất quán theo quy tắc làm tròn một chữ số thập phân.</li>
+        
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>Giá trị trung gian</h2>
+      <table>
+        <thead>
+          <tr><th>Name</th><th>Value</th></tr>
+        </thead>
+        <tbody>
+          
+          <tr><td>w0_dan_per_m2</td><td>155.000000</td></tr>
+          
+          <tr><td>v20_mps</td><td>50.284671</td></tr>
+          
+          <tr><td>v50_mps</td><td>55.375697</td></tr>
+          
+          <tr><td>return_period_factor</td><td>1.301629</td></tr>
+          
+          <tr><td>design_speed_mps</td><td>72.078621</td></tr>
+          
+          <tr><td>design_speed_kph</td><td>259.483034</td></tr>
+          
+          <tr><td>design_speed_mph</td><td>161.235258</td></tr>
+          
+          <tr><td>roof_angle_deg</td><td>5.710593</td></tr>
+          
+          <tr><td>mean_roof_height_m</td><td>24.375000</td></tr>
+          
+          <tr><td>kz</td><td>0.929677</td></tr>
+          
+          <tr><td>kzt</td><td>1.000000</td></tr>
+          
+          <tr><td>kd</td><td>0.850000</td></tr>
+          
+          <tr><td>qz_kn_per_m2</td><td>2.516660</td></tr>
+          
+          <tr><td>gcpi_positive</td><td>0.180000</td></tr>
+          
+          <tr><td>gcpi_negative</td><td>-0.180000</td></tr>
+          
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section">
+      <h2>Diễn giải tính toán</h2>
+      
+      <article class="step">
+        <h3>Chuẩn hóa hình học đầu vào</h3>
+        <div><strong>Biểu thức:</strong></div>
+        <div class="formula">he = H + 0.25 × Bf × i / 100 ; θ = atan(i/100)</div>
+        <div><strong>Thay số:</strong></div>
+        <div class="formula">he = 23.0 + 0.25 × 55.0 × 10.0/100 ; θ = atan(10.0/100)</div>
+        <div><strong>Kết quả:</strong> he = 24.375 m ; θ = 5.711 độ</div>
+        <p class="subtle" style="margin-top: 8px;"><strong>Giải thích:</strong> Bước này quy đổi hình học mái trước khi tra bảng hoặc tính áp lực.</p>
+      </article>
+      
+      <article class="step">
+        <h3>Chuyển đổi vận tốc gió</h3>
+        <div><strong>Biểu thức:</strong></div>
+        <div class="formula">W0 → V20 → V50 → Vdesign theo công thức QCVN và ASCE</div>
+        <div><strong>Thay số:</strong></div>
+        <div class="formula">W0 = 155.0 ; V20 = sqrt(W0/0.0613) ; a = f(ASCE 7-16, 50.0, 1700.0)</div>
+        <div><strong>Kết quả:</strong> V = 72.079 m/s</div>
+        <p class="subtle" style="margin-top: 8px;"><strong>Giải thích:</strong> Hệ số chu kỳ lặp thay đổi theo phiên bản tiêu chuẩn ASCE được chọn.</p>
+      </article>
+      
+      <article class="step">
+        <h3>Tra bảng và tính áp lực vận tốc</h3>
+        <div><strong>Biểu thức:</strong></div>
+        <div class="formula">Kz = NS_DOC(KZ_TABLE, he, exposure_column) ; qz = 0.613 × Kz × Kzt × Kd × V² / 1000</div>
+        <div><strong>Thay số:</strong></div>
+        <div class="formula">Kz = NS_DOC(..., 24.375, B) ; qz = 0.613 × 0.929677 × 1.0 × 0.85 × 72.078621² / 1000</div>
+        <div><strong>Kết quả:</strong> Kz = 0.930 ; qz = 2.517 kN/m²</div>
+        <p class="subtle" style="margin-top: 8px;"><strong>Giải thích:</strong> Hệ số được nội suy tuyến tính từ bảng tham chiếu nội bộ của phần mềm.</p>
+      </article>
+      
+      <article class="step">
+        <h3>Tổ hợp áp lực vùng</h3>
+        <div><strong>Biểu thức:</strong></div>
+        <div class="formula">WZi = qz × (GCpf - GCpi)</div>
+        <div><strong>Thay số:</strong></div>
+        <div class="formula">GCpi+ = 0.18 ; GCpi- = -0.18</div>
+        <div><strong>Kết quả:</strong> Sinh ra các áp lực vùng cho Case A và Case B.</div>
+        <p class="subtle" style="margin-top: 8px;"><strong>Giải thích:</strong> Nhà hở sẽ triệt tiêu một số áp lực tường theo logic điều kiện của mô hình tính.</p>
+      </article>
+      
+    </section>
+
+    <section class="section">
+      <h2>Kết quả cuối cùng</h2>
+      <h3 style="margin-bottom: 10px;">Case A: gió tác dụng lên tường bên</h3>
+      <table>
+        <thead>
+          <tr><th>Zone</th><th>GCpf</th><th>WL1/WR1</th><th>WL2/WR2</th><th>Line load 1</th><th>Line load 2</th></tr>
+        </thead>
+        <tbody>
+          
+          <tr>
+            <td>Z1</td>
+            <td>0.406</td>
+            <td>0.569</td>
+            <td>1.475</td>
+            <td>0.6</td>
+            <td>1.5</td>
+          </tr>
+          
+          <tr>
+            <td>Z2</td>
+            <td>-0.69</td>
+            <td>-2.189</td>
+            <td>-1.283</td>
+            <td>-2.2</td>
+            <td>-1.3</td>
+          </tr>
+          
+          <tr>
+            <td>Z3</td>
+            <td>-0.375</td>
+            <td>-1.397</td>
+            <td>-0.491</td>
+            <td>-1.4</td>
+            <td>-0.5</td>
+          </tr>
+          
+          <tr>
+            <td>Z4</td>
+            <td>-0.297</td>
+            <td>-1.2</td>
+            <td>-0.294</td>
+            <td>-1.2</td>
+            <td>-0.3</td>
+          </tr>
+          
+        </tbody>
+      </table>
+
+      <h3 style="margin: 18px 0 10px;">Case B: gió tác dụng lên đầu hồi</h3>
+      <table>
+        <thead>
+          <tr><th>Zone</th><th>GCpf</th><th>WE1/WE3</th><th>WE2/WE4</th><th>Line load 1</th><th>Line load 2</th></tr>
+        </thead>
+        <tbody>
+          
+          <tr>
+            <td>Z1</td>
+            <td>-0.45</td>
+            <td>-1.585</td>
+            <td>-0.679</td>
+            <td>-1.6</td>
+            <td>-0.7</td>
+          </tr>
+          
+          <tr>
+            <td>Z2</td>
+            <td>-0.69</td>
+            <td>-2.189</td>
+            <td>-1.283</td>
+            <td>-2.2</td>
+            <td>-1.3</td>
+          </tr>
+          
+          <tr>
+            <td>Z3</td>
+            <td>-0.37</td>
+            <td>-1.384</td>
+            <td>-0.478</td>
+            <td>-1.4</td>
+            <td>-0.5</td>
+          </tr>
+          
+          <tr>
+            <td>Z4</td>
+            <td>-0.45</td>
+            <td>-1.585</td>
+            <td>-0.679</td>
+            <td>-1.6</td>
+            <td>-0.7</td>
+          </tr>
+          
+          <tr>
+            <td>Z5</td>
+            <td>0.4</td>
+            <td>0.554</td>
+            <td>1.46</td>
+            <td>0.6</td>
+            <td>1.5</td>
+          </tr>
+          
+          <tr>
+            <td>Z6</td>
+            <td>-0.29</td>
+            <td>-1.183</td>
+            <td>-0.277</td>
+            <td>-1.2</td>
+            <td>-0.3</td>
+          </tr>
+          
+        </tbody>
+      </table>
+
+      <h3 style="margin: 18px 0 10px;">Tóm tắt line load theo vùng</h3>
+      <table>
+        <thead><tr><th>Cell</th><th>Value</th></tr></thead>
+        <tbody>
+          
+          <tr><td>S18</td><td>Z2= -2.2</td></tr>
+          
+          <tr><td>V18</td><td>Z3= -1.4</td></tr>
+          
+          <tr><td>Y18</td><td>Z2= -1.3</td></tr>
+          
+          <tr><td>AB18</td><td>Z3= -0.5</td></tr>
+          
+          <tr><td>S20</td><td>Z1= 0.6</td></tr>
+          
+          <tr><td>V20</td><td>Z4= -1.2</td></tr>
+          
+          <tr><td>Y20</td><td>Z1= 1.5</td></tr>
+          
+          <tr><td>AB20</td><td>Z4= -0.3</td></tr>
+          
+          <tr><td>S39</td><td>Z2= -2.2</td></tr>
+          
+          <tr><td>V39</td><td>Z3= -1.4</td></tr>
+          
+          <tr><td>Y39</td><td>Z2= -1.3</td></tr>
+          
+          <tr><td>AB39</td><td>Z3= -0.5</td></tr>
+          
+          <tr><td>S41</td><td>Z1= -1.6</td></tr>
+          
+          <tr><td>V41</td><td>Z4= -1.6</td></tr>
+          
+          <tr><td>Y41</td><td>Z1= -0.7</td></tr>
+          
+          <tr><td>AB41</td><td>Z4= -0.7</td></tr>
+          
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section">
+      <h2>Các khối nội dung copy-ready</h2>
+      <div class="section-grid">
+        <div>
+          <h3 style="margin-bottom: 10px;">Tiêu chuẩn thiết kế</h3>
+          <div class="formula">Thiết kế sử dụng các công thức chuyển đổi vận tốc gió theo QCVN và ASCE, nội suy hệ số Kz và GCpf theo bảng tham chiếu nội bộ, và tổ hợp nội áp GCpi theo kiểu bao che công trình.</div>
+          <h3 style="margin: 16px 0 10px;">Kết quả cuối</h3>
+          <div class="formula">## Kết quả cuối cùng
+- Áp lực vận tốc qz: 2.517 kN/m²
+- Vận tốc gió thiết kế: 72.079 m/s
+- Case A Z1: WL1/WR1 = 0.569, WL2/WR2 = 1.475
+- Case A Z2: WL1/WR1 = -2.189, WL2/WR2 = -1.283
+- Case A Z3: WL1/WR1 = -1.397, WL2/WR2 = -0.491
+- Case A Z4: WL1/WR1 = -1.2, WL2/WR2 = -0.294
+- Case B Z1: WE1/WE3 = -1.585, WE2/WE4 = -0.679
+- Case B Z2: WE1/WE3 = -2.189, WE2/WE4 = -1.283
+- Case B Z3: WE1/WE3 = -1.384, WE2/WE4 = -0.478
+- Case B Z4: WE1/WE3 = -1.585, WE2/WE4 = -0.679
+- Case B Z5: WE1/WE3 = 0.554, WE2/WE4 = 1.46
+- Case B Z6: WE1/WE3 = -1.183, WE2/WE4 = -0.277</div>
+        </div>
+        <div>
+          <h3 style="margin-bottom: 10px;">Trình tự tính</h3>
+          <div class="formula">### Chuẩn hóa hình học đầu vào
+- Biểu thức: he = H + 0.25 × Bf × i / 100 ; θ = atan(i/100)
+- Thay số: he = 23.0 + 0.25 × 55.0 × 10.0/100 ; θ = atan(10.0/100)
+- Kết quả: he = 24.375 m ; θ = 5.711 độ
+- Giải thích: Bước này quy đổi hình học mái trước khi tra bảng hoặc tính áp lực.
+
+### Chuyển đổi vận tốc gió
+- Biểu thức: W0 → V20 → V50 → Vdesign theo công thức QCVN và ASCE
+- Thay số: W0 = 155.0 ; V20 = sqrt(W0/0.0613) ; a = f(ASCE 7-16, 50.0, 1700.0)
+- Kết quả: V = 72.079 m/s
+- Giải thích: Hệ số chu kỳ lặp thay đổi theo phiên bản tiêu chuẩn ASCE được chọn.
+
+### Tra bảng và tính áp lực vận tốc
+- Biểu thức: Kz = NS_DOC(KZ_TABLE, he, exposure_column) ; qz = 0.613 × Kz × Kzt × Kd × V² / 1000
+- Thay số: Kz = NS_DOC(..., 24.375, B) ; qz = 0.613 × 0.929677 × 1.0 × 0.85 × 72.078621² / 1000
+- Kết quả: Kz = 0.930 ; qz = 2.517 kN/m²
+- Giải thích: Hệ số được nội suy tuyến tính từ bảng tham chiếu nội bộ của phần mềm.
+
+### Tổ hợp áp lực vùng
+- Biểu thức: WZi = qz × (GCpf - GCpi)
+- Thay số: GCpi+ = 0.18 ; GCpi- = -0.18
+- Kết quả: Sinh ra các áp lực vùng cho Case A và Case B.
+- Giải thích: Nhà hở sẽ triệt tiêu một số áp lực tường theo logic điều kiện của mô hình tính.</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-note">
+      Thời điểm sinh báo cáo: 2026-03-10T15:06:43.527799+00:00
+    </div>
+  </div>
+</body>
+</html>

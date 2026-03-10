@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASCE Wind Load Calculation Report</title>
+  <style>
+    :root {
+      --ink: #132235;
+      --muted: #526171;
+      --line: #d7e0e8;
+      --panel: #f6f9fc;
+      --accent: #0f5a73;
+      --soft: #eaf2f8;
+      --warn: #7c2d12;
+      --warn-bg: #fff7ed;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: var(--ink);
+      background: #eef3f8;
+      line-height: 1.45;
+    }
+    .page {
+      width: min(1120px, calc(100vw - 32px));
+      margin: 18px auto 28px;
+      background: white;
+      border: 1px solid var(--line);
+      box-shadow: 0 10px 32px rgba(15, 23, 42, 0.08);
+    }
+    .header {
+      padding: 28px 34px 18px;
+      border-bottom: 2px solid var(--soft);
+      background: linear-gradient(180deg, #f8fbfe, white);
+    }
+    .eyebrow {
+      margin: 0 0 6px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      font-weight: 800;
+    }
+    h1, h2, h3 { margin: 0; }
+    h1 { font-size: 28px; }
+    h2 {
+      font-size: 17px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 14px;
+    }
+    p { margin: 0 0 12px; }
+    .subtle { color: var(--muted); }
+    .meta-grid, .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .summary-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .meta-card, .metric-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 16px;
+      background: var(--panel);
+    }
+    .metric-card strong {
+      display: block;
+      font-size: 18px;
+      margin-top: 6px;
+    }
+    .section {
+      padding: 22px 34px;
+      border-top: 1px solid #eef2f7;
+    }
+    .section-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 18px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 13px;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 8px 10px;
+      vertical-align: top;
+      text-align: left;
+    }
+    th {
+      background: var(--soft);
+      font-weight: 700;
+    }
+    .caption {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .step {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      background: #fcfdff;
+    }
+    .step h3 {
+      font-size: 15px;
+      margin-bottom: 10px;
+    }
+    .formula {
+      font-family: Consolas, monospace;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin: 10px 0;
+      white-space: pre-wrap;
+    }
+    .warn-box {
+      border: 1px solid #fed7aa;
+      background: var(--warn-bg);
+      color: var(--warn);
+      border-radius: 14px;
+      padding: 12px 14px;
+    }
+    ul { margin: 8px 0 0 18px; padding: 0; }
+    .footer-note {
+      padding: 16px 34px 28px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    @media print {
+      body { background: white; }
+      .page {
+        width: auto;
+        margin: 0;
+        border: none;
+        box-shadow: none;
+      }
+      .section, .header { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <p class="eyebrow">ASCE WIND LOAD</p>
+      <h1>ASCE Wind Load Calculation Report</h1>
+      <p class="subtle">This report is generated directly from the validated calculation engine.</p>
+
+      <div class="meta-grid">
+        <div class="meta-card">
+          <strong>Project name</strong>
+          <p>Sample report</p>
+        </div>
+        <div class="meta-card">
+          <strong>Project reference</strong>
+          <p>WL-EN-001</p>
+        </div>
+      </div>
+
+      <div class="summary-grid">
+        
+        <div class="metric-card">
+          <span class="subtle">Design wind speed used for pressure combinations</span>
+          <strong>72.079 m/s</strong>
+          <div>Design speed</div>
+        </div>
+        
+        <div class="metric-card">
+          <span class="subtle">Velocity pressure used across pressure zones</span>
+          <strong>2.517 kN/m²</strong>
+          <div>Velocity pressure qz</div>
+        </div>
+        
+        <div class="metric-card">
+          <span class="subtle">Roof angle derived from user-entered slope</span>
+          <strong>5.711 deg</strong>
+          <div>Roof angle</div>
+        </div>
+        
+        <div class="metric-card">
+          <span class="subtle">Mean roof height used for coefficient lookup</span>
+          <strong>24.375 m</strong>
+          <div>Mean roof height</div>
+        </div>
+        
+        <div class="metric-card">
+          <span class="subtle">Interpolated from exposure table</span>
+          <strong>0.930 -</strong>
+          <div>Kz factor</div>
+        </div>
+        
+        <div class="metric-card">
+          <span class="subtle">Positive internal pressure coefficient</span>
+          <strong>0.180 -</strong>
+          <div>Positive GCpi</div>
+        </div>
+        
+      </div>
+    </header>
+
+    <section class="section">
+      <h2>Calculation summary</h2>
+      <p>Based on the specified wind parameters, internal pressure coefficients, and table-derived factors, the design velocity pressure is established and combined into Case A and Case B zone pressures for frame and gable checks. Velocity pressure qz: 2.517 kN/m². Case A Z2 = -2.189 kN/m².</p>
+    </section>
+
+    <section class="section">
+      <div class="section-grid">
+        <div>
+          <h2>Design criteria and code references</h2>
+          <p>The design applies wind speed conversion per QCVN and ASCE, interpolation of Kz and GCpf from internal reference tables, and GCpi assignment based on enclosure classification.</p>
+        </div>
+        <div>
+          <h2>Notes / limitations</h2>
+          <div class="warn-box">
+            <ul>
+              
+              <li>Case A windward roof currently governs a larger negative pressure than the gable case.</li>
+              
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Input parameters</h2>
+      <table>
+        <thead>
+          <tr><th>Parameter</th><th>Value</th></tr>
+        </thead>
+        <tbody>
+          
+          <tr><td>Project name</td><td>Sample report</td></tr>
+          
+          <tr><td>Project reference</td><td>WL-EN-001</td></tr>
+          
+          <tr><td>Design code</td><td>ASCE 7-16</td></tr>
+          
+          <tr><td>Wind zone</td><td>IV</td></tr>
+          
+          <tr><td>Exposure category</td><td>B</td></tr>
+          
+          <tr><td>Building category</td><td>III</td></tr>
+          
+          <tr><td>Bay spacing</td><td>1 m</td></tr>
+          
+          <tr><td>Eave height H</td><td>23 m</td></tr>
+          
+          <tr><td>Roof slope i</td><td>10 %</td></tr>
+          
+          <tr><td>Building width Bf</td><td>55 m</td></tr>
+          
+          <tr><td>Building length Lf</td><td>61.8 m</td></tr>
+          
+          <tr><td>Enclosure classification</td><td>Enclosed</td></tr>
+          
+          <tr><td>Source return period</td><td>50 years</td></tr>
+          
+          <tr><td>Target return period</td><td>1,700 years</td></tr>
+          
+          <tr><td>QCVN reference period</td><td>20 years</td></tr>
+          
+          <tr><td>Topographic factor Kzt</td><td>1</td></tr>
+          
+          <tr><td>Directionality factor Kd</td><td>0.85</td></tr>
+          
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section">
+      <h2>Assumptions</h2>
+      <ul>
+        
+        <li>The calculation engine applies a consistent set of wind load formulas and reference tables.</li>
+        
+        <li>Building category is retained for documentation, although the current model formulas do not reference it directly.</li>
+        
+        <li>Kz and GCpf values are obtained by linear interpolation from the internal reference tables.</li>
+        
+        <li>The roof-angle table is valid for the domain 0 to 90 degrees.</li>
+        
+        <li>Line-load labels follow a consistent one-decimal rounding rule.</li>
+        
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>Intermediate calculations</h2>
+      <table>
+        <thead>
+          <tr><th>Name</th><th>Value</th></tr>
+        </thead>
+        <tbody>
+          
+          <tr><td>w0_dan_per_m2</td><td>155.000000</td></tr>
+          
+          <tr><td>v20_mps</td><td>50.284671</td></tr>
+          
+          <tr><td>v50_mps</td><td>55.375697</td></tr>
+          
+          <tr><td>return_period_factor</td><td>1.301629</td></tr>
+          
+          <tr><td>design_speed_mps</td><td>72.078621</td></tr>
+          
+          <tr><td>design_speed_kph</td><td>259.483034</td></tr>
+          
+          <tr><td>design_speed_mph</td><td>161.235258</td></tr>
+          
+          <tr><td>roof_angle_deg</td><td>5.710593</td></tr>
+          
+          <tr><td>mean_roof_height_m</td><td>24.375000</td></tr>
+          
+          <tr><td>kz</td><td>0.929677</td></tr>
+          
+          <tr><td>kzt</td><td>1.000000</td></tr>
+          
+          <tr><td>kd</td><td>0.850000</td></tr>
+          
+          <tr><td>qz_kn_per_m2</td><td>2.516660</td></tr>
+          
+          <tr><td>gcpi_positive</td><td>0.180000</td></tr>
+          
+          <tr><td>gcpi_negative</td><td>-0.180000</td></tr>
+          
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section">
+      <h2>Calculation breakdown</h2>
+      
+      <article class="step">
+        <h3>Input normalization</h3>
+        <div><strong>Expression:</strong></div>
+        <div class="formula">he = H + 0.25 × Bf × i / 100 ; θ = atan(i/100)</div>
+        <div><strong>Substitution:</strong></div>
+        <div class="formula">he = 23.0 + 0.25 × 55.0 × 10.0/100 ; θ = atan(10.0/100)</div>
+        <div><strong>Result:</strong> he = 24.375 m ; θ = 5.711 deg</div>
+        <p class="subtle" style="margin-top: 8px;"><strong>Commentary:</strong> Roof geometry is normalized before any lookup or pressure calculation.</p>
+      </article>
+      
+      <article class="step">
+        <h3>Wind speed conversion</h3>
+        <div><strong>Expression:</strong></div>
+        <div class="formula">W0 → V20 → V50 → Vdesign using the QCVN and ASCE equations</div>
+        <div><strong>Substitution:</strong></div>
+        <div class="formula">W0 = 155.0 ; V20 = sqrt(W0/0.0613) ; a = f(ASCE 7-16, 50.0, 1700.0)</div>
+        <div><strong>Result:</strong> V = 72.079 m/s</div>
+        <p class="subtle" style="margin-top: 8px;"><strong>Commentary:</strong> The return-period factor changes with the selected ASCE edition.</p>
+      </article>
+      
+      <article class="step">
+        <h3>Lookup and velocity pressure</h3>
+        <div><strong>Expression:</strong></div>
+        <div class="formula">Kz = NS_DOC(KZ_TABLE, he, exposure_column) ; qz = 0.613 × Kz × Kzt × Kd × V² / 1000</div>
+        <div><strong>Substitution:</strong></div>
+        <div class="formula">Kz = NS_DOC(..., 24.375, B) ; qz = 0.613 × 0.929677 × 1.0 × 0.85 × 72.078621² / 1000</div>
+        <div><strong>Result:</strong> Kz = 0.930 ; qz = 2.517 kN/m²</div>
+        <p class="subtle" style="margin-top: 8px;"><strong>Commentary:</strong> The coefficient is obtained by linear interpolation from the internal reference table.</p>
+      </article>
+      
+      <article class="step">
+        <h3>Pressure combinations</h3>
+        <div><strong>Expression:</strong></div>
+        <div class="formula">WZi = qz × (GCpf - GCpi)</div>
+        <div><strong>Substitution:</strong></div>
+        <div class="formula">GCpi+ = 0.18 ; GCpi- = -0.18</div>
+        <div><strong>Result:</strong> This produces the governing zone pressures for Case A and Case B.</div>
+        <p class="subtle" style="margin-top: 8px;"><strong>Commentary:</strong> Open buildings suppress selected wall pressures according to the model condition branches.</p>
+      </article>
+      
+    </section>
+
+    <section class="section">
+      <h2>Final results</h2>
+      <h3 style="margin-bottom: 10px;">Case A: wind acting on side wall</h3>
+      <table>
+        <thead>
+          <tr><th>Zone</th><th>GCpf</th><th>WL1/WR1</th><th>WL2/WR2</th><th>Line load 1</th><th>Line load 2</th></tr>
+        </thead>
+        <tbody>
+          
+          <tr>
+            <td>Z1</td>
+            <td>0.406</td>
+            <td>0.569</td>
+            <td>1.475</td>
+            <td>0.6</td>
+            <td>1.5</td>
+          </tr>
+          
+          <tr>
+            <td>Z2</td>
+            <td>-0.69</td>
+            <td>-2.189</td>
+            <td>-1.283</td>
+            <td>-2.2</td>
+            <td>-1.3</td>
+          </tr>
+          
+          <tr>
+            <td>Z3</td>
+            <td>-0.375</td>
+            <td>-1.397</td>
+            <td>-0.491</td>
+            <td>-1.4</td>
+            <td>-0.5</td>
+          </tr>
+          
+          <tr>
+            <td>Z4</td>
+            <td>-0.297</td>
+            <td>-1.2</td>
+            <td>-0.294</td>
+            <td>-1.2</td>
+            <td>-0.3</td>
+          </tr>
+          
+        </tbody>
+      </table>
+
+      <h3 style="margin: 18px 0 10px;">Case B: wind acting on gable end</h3>
+      <table>
+        <thead>
+          <tr><th>Zone</th><th>GCpf</th><th>WE1/WE3</th><th>WE2/WE4</th><th>Line load 1</th><th>Line load 2</th></tr>
+        </thead>
+        <tbody>
+          
+          <tr>
+            <td>Z1</td>
+            <td>-0.45</td>
+            <td>-1.585</td>
+            <td>-0.679</td>
+            <td>-1.6</td>
+            <td>-0.7</td>
+          </tr>
+          
+          <tr>
+            <td>Z2</td>
+            <td>-0.69</td>
+            <td>-2.189</td>
+            <td>-1.283</td>
+            <td>-2.2</td>
+            <td>-1.3</td>
+          </tr>
+          
+          <tr>
+            <td>Z3</td>
+            <td>-0.37</td>
+            <td>-1.384</td>
+            <td>-0.478</td>
+            <td>-1.4</td>
+            <td>-0.5</td>
+          </tr>
+          
+          <tr>
+            <td>Z4</td>
+            <td>-0.45</td>
+            <td>-1.585</td>
+            <td>-0.679</td>
+            <td>-1.6</td>
+            <td>-0.7</td>
+          </tr>
+          
+          <tr>
+            <td>Z5</td>
+            <td>0.4</td>
+            <td>0.554</td>
+            <td>1.46</td>
+            <td>0.6</td>
+            <td>1.5</td>
+          </tr>
+          
+          <tr>
+            <td>Z6</td>
+            <td>-0.29</td>
+            <td>-1.183</td>
+            <td>-0.277</td>
+            <td>-1.2</td>
+            <td>-0.3</td>
+          </tr>
+          
+        </tbody>
+      </table>
+
+      <h3 style="margin: 18px 0 10px;">Workbook line-load labels</h3>
+      <table>
+        <thead><tr><th>Cell</th><th>Value</th></tr></thead>
+        <tbody>
+          
+          <tr><td>S18</td><td>Z2= -2.2</td></tr>
+          
+          <tr><td>V18</td><td>Z3= -1.4</td></tr>
+          
+          <tr><td>Y18</td><td>Z2= -1.3</td></tr>
+          
+          <tr><td>AB18</td><td>Z3= -0.5</td></tr>
+          
+          <tr><td>S20</td><td>Z1= 0.6</td></tr>
+          
+          <tr><td>V20</td><td>Z4= -1.2</td></tr>
+          
+          <tr><td>Y20</td><td>Z1= 1.5</td></tr>
+          
+          <tr><td>AB20</td><td>Z4= -0.3</td></tr>
+          
+          <tr><td>S39</td><td>Z2= -2.2</td></tr>
+          
+          <tr><td>V39</td><td>Z3= -1.4</td></tr>
+          
+          <tr><td>Y39</td><td>Z2= -1.3</td></tr>
+          
+          <tr><td>AB39</td><td>Z3= -0.5</td></tr>
+          
+          <tr><td>S41</td><td>Z1= -1.6</td></tr>
+          
+          <tr><td>V41</td><td>Z4= -1.6</td></tr>
+          
+          <tr><td>Y41</td><td>Z1= -0.7</td></tr>
+          
+          <tr><td>AB41</td><td>Z4= -0.7</td></tr>
+          
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section">
+      <h2>Copy-ready report blocks</h2>
+      <div class="section-grid">
+        <div>
+          <h3 style="margin-bottom: 10px;">Design criteria</h3>
+          <div class="formula">The design applies wind speed conversion per QCVN and ASCE, interpolation of Kz and GCpf from internal reference tables, and GCpi assignment based on enclosure classification.</div>
+          <h3 style="margin: 16px 0 10px;">Final results</h3>
+          <div class="formula">## Final results
+- Velocity pressure qz: 2.517 kN/m²
+- Design speed: 72.079 m/s
+- Case A Z1: WL1/WR1 = 0.569, WL2/WR2 = 1.475
+- Case A Z2: WL1/WR1 = -2.189, WL2/WR2 = -1.283
+- Case A Z3: WL1/WR1 = -1.397, WL2/WR2 = -0.491
+- Case A Z4: WL1/WR1 = -1.2, WL2/WR2 = -0.294
+- Case B Z1: WE1/WE3 = -1.585, WE2/WE4 = -0.679
+- Case B Z2: WE1/WE3 = -2.189, WE2/WE4 = -1.283
+- Case B Z3: WE1/WE3 = -1.384, WE2/WE4 = -0.478
+- Case B Z4: WE1/WE3 = -1.585, WE2/WE4 = -0.679
+- Case B Z5: WE1/WE3 = 0.554, WE2/WE4 = 1.46
+- Case B Z6: WE1/WE3 = -1.183, WE2/WE4 = -0.277</div>
+        </div>
+        <div>
+          <h3 style="margin-bottom: 10px;">Calculation procedure</h3>
+          <div class="formula">### Input normalization
+- Expression: he = H + 0.25 × Bf × i / 100 ; θ = atan(i/100)
+- Substitution: he = 23.0 + 0.25 × 55.0 × 10.0/100 ; θ = atan(10.0/100)
+- Result: he = 24.375 m ; θ = 5.711 deg
+- Commentary: Roof geometry is normalized before any lookup or pressure calculation.
+
+### Wind speed conversion
+- Expression: W0 → V20 → V50 → Vdesign using the QCVN and ASCE equations
+- Substitution: W0 = 155.0 ; V20 = sqrt(W0/0.0613) ; a = f(ASCE 7-16, 50.0, 1700.0)
+- Result: V = 72.079 m/s
+- Commentary: The return-period factor changes with the selected ASCE edition.
+
+### Lookup and velocity pressure
+- Expression: Kz = NS_DOC(KZ_TABLE, he, exposure_column) ; qz = 0.613 × Kz × Kzt × Kd × V² / 1000
+- Substitution: Kz = NS_DOC(..., 24.375, B) ; qz = 0.613 × 0.929677 × 1.0 × 0.85 × 72.078621² / 1000
+- Result: Kz = 0.930 ; qz = 2.517 kN/m²
+- Commentary: The coefficient is obtained by linear interpolation from the internal reference table.
+
+### Pressure combinations
+- Expression: WZi = qz × (GCpf - GCpi)
+- Substitution: GCpi+ = 0.18 ; GCpi- = -0.18
+- Result: This produces the governing zone pressures for Case A and Case B.
+- Commentary: Open buildings suppress selected wall pressures according to the model condition branches.</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-note">
+      Generated at: 2026-03-10T15:06:43.528105+00:00
+    </div>
+  </div>
+</body>
+</html>

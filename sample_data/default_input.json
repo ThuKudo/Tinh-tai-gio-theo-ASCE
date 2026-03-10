@@ -1,0 +1,19 @@
+{
+  "project_name": "Default ASCE Wind Check",
+  "project_reference": "WL-ASCE-001",
+  "design_code": "ASCE 7-16",
+  "wind_zone": "IV",
+  "exposure_category": "B",
+  "building_category": "III",
+  "bay_spacing_m": 1.0,
+  "eave_height_m": 23.0,
+  "roof_slope_percent": 10.0,
+  "building_width_m": 55.0,
+  "building_length_m": 61.8,
+  "enclosure_type": "Enclosed",
+  "source_return_period_years": 50.0,
+  "target_return_period_years": 1700.0,
+  "qcvn_reference_years": 20.0,
+  "topographic_factor": 1.0,
+  "wind_directionality_factor": 0.85
+}
