@@ -82,6 +82,20 @@ cd "D:\03. LEARNING\0. Python\win_load_asce_app"
 
 Mở `http://127.0.0.1:8000`.
 
+## Deploy lên Vercel
+
+Repo đã có sẵn:
+
+- [api/index.py](./api/index.py) làm entrypoint cho Python serverless runtime
+- [vercel.json](./vercel.json) để route toàn bộ request vào FastAPI app
+
+Sau khi push code mới lên GitHub:
+
+1. Import repo vào Vercel
+2. Framework preset có thể để `Other`
+3. Không cần custom build command
+4. Redeploy
+
 ## Chạy test
 
 ```powershell
