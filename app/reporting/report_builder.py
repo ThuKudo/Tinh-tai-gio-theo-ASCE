@@ -57,8 +57,14 @@ def build_report_view_model(payload: WinLoadInputSchema, lang: str = DEFAULT_LAN
         f"Case A {case_a_governing['zone']} = {format_number(case_a_governing['WL1/WR1'], 3)} {text['unit_pressure']}."
     )
 
+    meta = {
+        **result["meta"],
+        "author_name": text["author_name"],
+        "author_email": text["author_email"],
+    }
+
     report = {
-        "meta": result["meta"],
+        "meta": meta,
         "language": lang,
         "text": text,
         "summary_narrative": narrative,
@@ -121,6 +127,7 @@ def build_copy_blocks(report: dict[str, Any]) -> dict[str, str]:
         "calculation_breakdown": "\n".join(breakdown_md).strip(),
         "final_results": "\n".join(result_lines),
         "notes": "\n".join(notes_lines) if notes_lines else text["report_not_applicable"],
+        "author_signature": f"{text['report_prepared_by']}: {report['meta']['author_name']} - {report['meta']['author_email']}",
     }
 
 
@@ -134,6 +141,7 @@ def render_markdown(report: dict[str, Any]) -> str:
         f"## {text['title_project_info']}",
         f"- {text['project_name']}: {report['meta']['project_name']}",
         f"- {text['project_reference']}: {report['meta']['project_reference']}",
+        f"- {text['report_prepared_by']}: {report['meta']['author_name']} - {report['meta']['author_email']}",
         f"- {text['generated_at']}: {report['meta']['generated_at']}",
         "",
         f"## {text['title_design_criteria']}",
@@ -153,5 +161,7 @@ def render_markdown(report: dict[str, Any]) -> str:
         "",
         f"## {text['title_notes']}",
         report["copy_blocks"]["notes"],
+        "",
+        report["copy_blocks"]["author_signature"],
     ]
     return "\n".join(sections)

@@ -5,7 +5,8 @@ Dựa trên thông số gió, hệ số nội áp và các giá trị tra bảng
 ## Thông tin công trình
 - Tên dự án: Bao cao mau
 - Mã tham chiếu: WL-VI-001
-- Thời điểm sinh báo cáo: 2026-03-10T15:06:43.527799+00:00
+- Người phụ trách: Thư Kudo - anhthu.phanhuynh219@gmail.com
+- Thời điểm sinh báo cáo: 2026-03-10T16:03:49.373985+00:00
 
 ## Tiêu chuẩn và tiêu chí thiết kế
 Thiết kế sử dụng các công thức chuyển đổi vận tốc gió theo QCVN và ASCE, nội suy hệ số Kz và GCpf theo bảng tham chiếu nội bộ, và tổ hợp nội áp GCpi theo kiểu bao che công trình.
@@ -77,3 +78,5 @@ Thiết kế sử dụng các công thức chuyển đổi vận tốc gió theo
 - Bảng góc mái chỉ có hiệu lực trong miền 0 đến 90 độ.
 - Nhãn line load được format nhất quán theo quy tắc làm tròn một chữ số thập phân.
 - Case A mái đón gió đang chi phối áp lực âm lớn hơn đầu hồi.
+
+Người phụ trách: Thư Kudo - anhthu.phanhuynh219@gmail.com

@@ -27,10 +27,38 @@ def _register_fonts() -> tuple[str, str]:
 def build_pdf(report: dict) -> bytes:
     regular_font, bold_font = _register_fonts()
     buffer = BytesIO()
-    doc = SimpleDocTemplate(buffer, pagesize=A4, leftMargin=18 * mm, rightMargin=18 * mm, topMargin=16 * mm, bottomMargin=16 * mm)
+    doc = SimpleDocTemplate(
+        buffer,
+        pagesize=A4,
+        leftMargin=18 * mm,
+        rightMargin=18 * mm,
+        topMargin=16 * mm,
+        bottomMargin=16 * mm,
+    )
     styles = getSampleStyleSheet()
-    styles.add(ParagraphStyle(name="ReportTitle", parent=styles["Title"], fontName=bold_font, fontSize=18, leading=22, textColor=colors.HexColor("#102033"), alignment=TA_LEFT))
-    styles.add(ParagraphStyle(name="SectionHeading", parent=styles["Heading2"], fontName=bold_font, fontSize=12, leading=15, textColor=colors.HexColor("#0f4d63"), spaceBefore=10, spaceAfter=6))
+    styles.add(
+        ParagraphStyle(
+            name="ReportTitle",
+            parent=styles["Title"],
+            fontName=bold_font,
+            fontSize=18,
+            leading=22,
+            textColor=colors.HexColor("#102033"),
+            alignment=TA_LEFT,
+        )
+    )
+    styles.add(
+        ParagraphStyle(
+            name="SectionHeading",
+            parent=styles["Heading2"],
+            fontName=bold_font,
+            fontSize=12,
+            leading=15,
+            textColor=colors.HexColor("#0f4d63"),
+            spaceBefore=10,
+            spaceAfter=6,
+        )
+    )
     styles.add(ParagraphStyle(name="BodySmall", parent=styles["BodyText"], fontName=regular_font, fontSize=9.2, leading=13))
 
     text = report["text"]
@@ -69,6 +97,7 @@ def build_pdf(report: dict) -> bytes:
         [
             [text["project_name"], report["meta"]["project_name"]],
             [text["project_reference"], report["meta"]["project_reference"]],
+            [text["report_prepared_by"], f"{report['meta']['author_name']} - {report['meta']['author_email']}"],
             [text["generated_at"], report["meta"]["generated_at"]],
         ],
         [52 * mm, 120 * mm],
@@ -89,14 +118,34 @@ def build_pdf(report: dict) -> bytes:
     add_table(
         text["case_a_title"],
         [["Zone", "GCpf", "Case 1", "Case 2", "Line 1", "Line 2"]]
-        + [[str(row["zone"]), str(row["gc_pf"]), str(row["WL1/WR1"]), str(row["WL2/WR2"]), str(row["line_load_case_1"]), str(row["line_load_case_2"])] for row in report["case_a_rows"]],
+        + [
+            [
+                str(row["zone"]),
+                str(row["gc_pf"]),
+                str(row["WL1/WR1"]),
+                str(row["WL2/WR2"]),
+                str(row["line_load_case_1"]),
+                str(row["line_load_case_2"]),
+            ]
+            for row in report["case_a_rows"]
+        ],
         [18 * mm, 24 * mm, 30 * mm, 30 * mm, 30 * mm, 30 * mm],
     )
 
     add_table(
         text["case_b_title"],
         [["Zone", "GCpf", "Case 1", "Case 2", "Line 1", "Line 2"]]
-        + [[str(row["zone"]), str(row["gc_pf"]), str(row["WE1/WE3"]), str(row["WE2/WE4"]), str(row["line_load_case_1"]), str(row["line_load_case_2"])] for row in report["case_b_rows"]],
+        + [
+            [
+                str(row["zone"]),
+                str(row["gc_pf"]),
+                str(row["WE1/WE3"]),
+                str(row["WE2/WE4"]),
+                str(row["line_load_case_1"]),
+                str(row["line_load_case_2"]),
+            ]
+            for row in report["case_b_rows"]
+        ],
         [18 * mm, 24 * mm, 30 * mm, 30 * mm, 30 * mm, 30 * mm],
     )
 
@@ -106,12 +155,19 @@ def build_pdf(report: dict) -> bytes:
 
     story.append(Paragraph(text["title_assumptions"], styles["SectionHeading"]))
     for item in report["assumptions"]:
-        story.append(Paragraph(f"• {item}", styles["BodySmall"]))
+        story.append(Paragraph(f"* {item}", styles["BodySmall"]))
     story.append(Spacer(1, 3 * mm))
 
     story.append(Paragraph(text["title_notes"], styles["SectionHeading"]))
     for item in report["warnings"]:
-        story.append(Paragraph(f"• {item}", styles["BodySmall"]))
+        story.append(Paragraph(f"* {item}", styles["BodySmall"]))
+    story.append(Spacer(1, 3 * mm))
+    story.append(
+        Paragraph(
+            f"{text['report_prepared_by']}: {report['meta']['author_name']} - {report['meta']['author_email']}",
+            styles["BodySmall"],
+        )
+    )
 
     doc.build(story)
     return buffer.getvalue()

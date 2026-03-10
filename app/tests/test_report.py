@@ -23,6 +23,8 @@ class ReportTests(unittest.TestCase):
         self.assertIn(self.report_vi["text"]["title_design_criteria"], markdown)
         self.assertIn(self.report_vi["text"]["title_final_results"], markdown)
         self.assertIn("qz", markdown.lower())
+        self.assertIn("Thư Kudo", markdown)
+        self.assertIn("anhthu.phanhuynh219@gmail.com", markdown)
 
     def test_pdf_generation(self) -> None:
         pdf_bytes = build_pdf(self.report_en)
@@ -31,7 +33,7 @@ class ReportTests(unittest.TestCase):
 
     def test_copy_blocks_generated(self) -> None:
         blocks = self.report_vi["copy_blocks"]
-        for key in ["executive_summary", "input_table", "calculation_breakdown", "final_results", "notes"]:
+        for key in ["executive_summary", "input_table", "calculation_breakdown", "final_results", "notes", "author_signature"]:
             self.assertIn(key, blocks)
             self.assertTrue(blocks[key].strip())
 

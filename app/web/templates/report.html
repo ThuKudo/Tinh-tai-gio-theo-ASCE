@@ -164,6 +164,14 @@
           <strong>{{ report.text.project_reference }}</strong>
           <p>{{ report.meta.project_reference }}</p>
         </div>
+        <div class="meta-card">
+          <strong>{{ report.text.report_prepared_by }}</strong>
+          <p>{{ report.meta.author_name }}<br>{{ report.meta.author_email }}</p>
+        </div>
+        <div class="meta-card">
+          <strong>{{ report.text.generated_at }}</strong>
+          <p>{{ report.meta.generated_at }}</p>
+        </div>
       </div>
 
       <div class="summary-grid">
@@ -321,6 +329,7 @@
     </section>
 
     <div class="footer-note">
+      {{ report.text.report_prepared_by }}: {{ report.meta.author_name }} - {{ report.meta.author_email }}<br>
       {{ report.text.generated_at }}: {{ report.meta.generated_at }}
     </div>
   </div>

@@ -5,7 +5,8 @@ Based on the specified wind parameters, internal pressure coefficients, and tabl
 ## Project information
 - Project name: Sample report
 - Project reference: WL-EN-001
-- Generated at: 2026-03-10T15:06:43.528105+00:00
+- Prepared by: Thu Kudo - anhthu.phanhuynh219@gmail.com
+- Generated at: 2026-03-10T16:03:49.374285+00:00
 
 ## Design criteria and code references
 The design applies wind speed conversion per QCVN and ASCE, interpolation of Kz and GCpf from internal reference tables, and GCpi assignment based on enclosure classification.
@@ -77,3 +78,5 @@ The design applies wind speed conversion per QCVN and ASCE, interpolation of Kz 
 - The roof-angle table is valid for the domain 0 to 90 degrees.
 - Line-load labels follow a consistent one-decimal rounding rule.
 - Case A windward roof currently governs a larger negative pressure than the gable case.
+
+Prepared by: Thu Kudo - anhthu.phanhuynh219@gmail.com
