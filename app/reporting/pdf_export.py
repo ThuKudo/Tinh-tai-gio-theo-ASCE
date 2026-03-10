@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from io import BytesIO
 from pathlib import Path
+import unicodedata
 
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_LEFT
@@ -14,14 +15,22 @@ from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, Tabl
 
 
 def _register_fonts() -> tuple[str, str]:
-    font_dir = Path("C:/Windows/Fonts")
-    regular = font_dir / "arial.ttf"
-    bold = font_dir / "arialbd.ttf"
-    if regular.exists() and bold.exists():
-        pdfmetrics.registerFont(TTFont("AppArial", str(regular)))
-        pdfmetrics.registerFont(TTFont("AppArial-Bold", str(bold)))
-        return "AppArial", "AppArial-Bold"
+    candidates = [
+        ("AppNotoSans", Path("/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf"), Path("/usr/share/fonts/truetype/noto/NotoSans-Bold.ttf")),
+        ("AppDejaVuSans", Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"), Path("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf")),
+        ("AppLiberationSans", Path("/usr/share/fonts/truetype/liberation2/LiberationSans-Regular.ttf"), Path("/usr/share/fonts/truetype/liberation2/LiberationSans-Bold.ttf")),
+        ("AppArial", Path("C:/Windows/Fonts/arial.ttf"), Path("C:/Windows/Fonts/arialbd.ttf")),
+    ]
+    for family, regular, bold in candidates:
+        if regular.exists() and bold.exists():
+            pdfmetrics.registerFont(TTFont(family, str(regular)))
+            pdfmetrics.registerFont(TTFont(f"{family}-Bold", str(bold)))
+            return family, f"{family}-Bold"
     return "Helvetica", "Helvetica-Bold"
+
+
+def _safe_text(value: object) -> str:
+    return unicodedata.normalize("NFC", str(value))
 
 
 def build_pdf(report: dict) -> bytes:
@@ -63,15 +72,16 @@ def build_pdf(report: dict) -> bytes:
 
     text = report["text"]
     story = [
-        Paragraph(text["report_title"], styles["ReportTitle"]),
+        Paragraph(_safe_text(text["report_title"]), styles["ReportTitle"]),
         Spacer(1, 4 * mm),
-        Paragraph(report["summary_narrative"], styles["BodySmall"]),
+        Paragraph(_safe_text(report["summary_narrative"]), styles["BodySmall"]),
         Spacer(1, 5 * mm),
     ]
 
     def add_table(title: str, rows: list[list[str]], widths: list[float]) -> None:
-        story.append(Paragraph(title, styles["SectionHeading"]))
-        table = Table(rows, colWidths=widths, repeatRows=1)
+        story.append(Paragraph(_safe_text(title), styles["SectionHeading"]))
+        normalized_rows = [[_safe_text(cell) for cell in row] for row in rows]
+        table = Table(normalized_rows, colWidths=widths, repeatRows=1)
         table.setStyle(
             TableStyle(
                 [
@@ -149,22 +159,22 @@ def build_pdf(report: dict) -> bytes:
         [18 * mm, 24 * mm, 30 * mm, 30 * mm, 30 * mm, 30 * mm],
     )
 
-    story.append(Paragraph(text["title_design_criteria"], styles["SectionHeading"]))
-    story.append(Paragraph(report["design_criteria"], styles["BodySmall"]))
+    story.append(Paragraph(_safe_text(text["title_design_criteria"]), styles["SectionHeading"]))
+    story.append(Paragraph(_safe_text(report["design_criteria"]), styles["BodySmall"]))
     story.append(Spacer(1, 3 * mm))
 
-    story.append(Paragraph(text["title_assumptions"], styles["SectionHeading"]))
+    story.append(Paragraph(_safe_text(text["title_assumptions"]), styles["SectionHeading"]))
     for item in report["assumptions"]:
-        story.append(Paragraph(f"* {item}", styles["BodySmall"]))
+        story.append(Paragraph(_safe_text(f"* {item}"), styles["BodySmall"]))
     story.append(Spacer(1, 3 * mm))
 
-    story.append(Paragraph(text["title_notes"], styles["SectionHeading"]))
+    story.append(Paragraph(_safe_text(text["title_notes"]), styles["SectionHeading"]))
     for item in report["warnings"]:
-        story.append(Paragraph(f"* {item}", styles["BodySmall"]))
+        story.append(Paragraph(_safe_text(f"* {item}"), styles["BodySmall"]))
     story.append(Spacer(1, 3 * mm))
     story.append(
         Paragraph(
-            f"{text['report_prepared_by']}: {report['meta']['author_name']} - {report['meta']['author_email']}",
+            _safe_text(f"{text['report_prepared_by']}: {report['meta']['author_name']} - {report['meta']['author_email']}"),
             styles["BodySmall"],
         )
     )
