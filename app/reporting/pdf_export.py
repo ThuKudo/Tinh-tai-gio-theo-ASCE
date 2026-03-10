@@ -15,7 +15,9 @@ from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, Tabl
 
 
 def _register_fonts() -> tuple[str, str]:
+    local_dir = Path(__file__).resolve().parent
     candidates = [
+        ("AppBundledDejaVuSans", local_dir / "DejaVuSans.ttf", local_dir / "DejaVuSans-Bold.ttf"),
         ("AppNotoSans", Path("/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf"), Path("/usr/share/fonts/truetype/noto/NotoSans-Bold.ttf")),
         ("AppDejaVuSans", Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"), Path("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf")),
         ("AppLiberationSans", Path("/usr/share/fonts/truetype/liberation2/LiberationSans-Regular.ttf"), Path("/usr/share/fonts/truetype/liberation2/LiberationSans-Bold.ttf")),
